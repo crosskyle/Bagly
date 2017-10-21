@@ -1,10 +1,13 @@
-import React from 'react'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { signInOrSignUp } from '../actions'
 import PropTypes from 'prop-types'
 import { withStyles } from 'material-ui-next/styles'
 import Paper from 'material-ui-next/Paper'
 import Typography from 'material-ui-next/Typography'
 import TextField from 'material-ui-next/TextField'
 import Button from 'material-ui-next/Button'
+
 
 const styles = theme => ({
   root: {
@@ -49,40 +52,89 @@ const styles = theme => ({
 
 });
 
-function Welcome(props) {
-  const { classes } = props;
-  return (
-    <div className={classes.root}>
-      <Paper className={classes.paper} elevation={4}>
-        <Typography className={classes.header} type="headline" component="h3">
-          Welcome to Bagly
-        </Typography>
-        <form className={classes.form} noValidate autoComplete="off">
-          <TextField
-            id="email"
-            label="Email"
-            className={classes.textField}
-            margin="normal"
-          />
-          <TextField
-            id="password"
-            label="Password"
-            className={classes.textField}
-            type="password"
-            autoComplete="current-password"
-            margin="normal"
-          />
-        </form>
-        <Button raised color="primary" className={classes.button}>
-          signin / signup
-        </Button>
-      </Paper>
-    </div>
-  );
+
+class Welcome extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      email: '',
+      password: ''
+    }
+
+    this.onFormSubmit = this.onFormSubmit.bind(this);
+  }
+
+  onFormSubmit(event) {
+    console.log(this.state.email, this.state.password)
+    event.preventDefault();
+    //this.props.signInOrSignUp(this.state.item)
+
+  }
+
+  render() {
+    const { classes } = this.props;
+
+    return (
+      <div className={classes.root}>
+        <Paper className={classes.paper} elevation={4}>
+          <Typography className={classes.header} type="headline" component="h3">
+            Welcome to Bagly
+          </Typography>
+          <form
+            className={classes.form}
+            noValidate
+            autoComplete="off"
+            onSubmit={this.onFormSubmit}
+          >
+            <TextField
+              id="email"
+              label="Email"
+              className={classes.textField}
+              margin="normal"
+              value={this.state.email}
+              onChange={(event) => {
+                this.setState({
+                  email: event.target.value
+                })
+              }}
+            />
+            <TextField
+              id="password"
+              label="Password"
+              className={classes.textField}
+              type="password"
+              autoComplete="current-password"
+              margin="normal"
+              value={this.state.password}
+              onChange={(event) => {
+                this.setState({
+                  password: event.target.value
+                })
+              }}
+            />
+            <Button
+              raised
+              color="primary"
+              className={classes.button}
+              type = "submit"
+            >
+              signin / signup
+            </Button>
+          </form>
+        </Paper>
+      </div>
+    );
+  }
 }
+
 
 Welcome.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Welcome);
+Welcome = withStyles(styles)(Welcome)
+Welcome = connect(null, { signInOrSignUp })(Welcome)
+
+export default Welcome
