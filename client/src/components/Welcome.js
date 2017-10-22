@@ -67,10 +67,8 @@ class Welcome extends Component {
   }
 
   onFormSubmit(event) {
-    console.log(this.state.email, this.state.password)
     event.preventDefault();
-    //this.props.signInOrSignUp(this.state.item)
-
+    this.props.signInOrSignUp(this.state.email, this.state.password)
   }
 
   render() {

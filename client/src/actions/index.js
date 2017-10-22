@@ -7,7 +7,8 @@ import {
   READ_PACKS,
   SELECTED_PACK,
   READ_ITEMS,
-  PACK_VIS
+  PACK_VIS,
+  AUTH_USER
 } from './types'
 
 const ROOT_URL = 'http://localhost:3050'
@@ -15,7 +16,10 @@ const ROOT_URL = 'http://localhost:3050'
 const USER_ID = '59b5b4005a43c3029b9655de'
 
 export function signInOrSignUp(email, password) {
-
+  return {
+    type: AUTH_USER,
+    payload: true
+  }
 }
 export function createPack() {
   const response = axios.post(`${ROOT_URL}/api/users/${USER_ID}/packs`)
