@@ -15,10 +15,14 @@ const ROOT_URL = 'http://localhost:3050'
 
 const USER_ID = '59b5b4005a43c3029b9655de'
 
-export function signInOrSignUp(email, password) {
+export function authenticate(email, password) {
+
+  const response = axios.post(`${ROOT_URL}/api/users/${USER_ID}/packs`)
+    .then((resp) => resp.data)
+
   return {
     type: AUTH_USER,
-    payload: true
+    payload: response
   }
 }
 export function createPack() {

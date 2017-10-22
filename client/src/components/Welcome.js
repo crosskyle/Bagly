@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { signInOrSignUp } from '../actions'
+import { authenticate } from '../actions'
 import PropTypes from 'prop-types'
 import { withStyles } from 'material-ui-next/styles'
 import Paper from 'material-ui-next/Paper'
@@ -133,6 +133,6 @@ Welcome.propTypes = {
 };
 
 Welcome = withStyles(styles)(Welcome)
-Welcome = connect(null, { signInOrSignUp })(Welcome)
+Welcome = connect(null, { signInOrSignUp: authenticate })(Welcome)
 
 export default Welcome

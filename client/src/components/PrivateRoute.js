@@ -1,25 +1,39 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { authenticate } from '../actions'
 import { Route, Redirect } from 'react-router-dom'
 
 
-const PrivateRoute = ({ component: Component, ...rest, auth }) =>
-{
-  return (
-  <Route {...rest} render={props => (
-    auth.authenticated ? (
-      <Component {...props}/>
-    ) : (
-      <Redirect to={{
-        pathname: '/auth',
-        state: { from: props.location }
-      }}/>
+class PrivateRoute extends Component {
+
+  componentWillMount() {
+    //this.props.authenticate()
+  }
+
+
+  render() {
+    const { path, auth } = this.props
+    const Component = this.props.component
+
+    return (
+      <Route {...path} render={(props) => (
+        auth.authenticated ? (
+          <Component {...props}/>
+        ) : (
+          <Redirect to={{
+            pathname: '/',
+            state: { from: props.location }
+          }}/>
+        )
+      )}/>
     )
-  )}/>
-)}
+  }
+}
+
+
 function mapStateToProps(state) {
   return { auth: state.auth }
 }
 
-export default connect(mapStateToProps, null)(PrivateRoute)
+export default connect(mapStateToProps, { authenticate })(PrivateRoute)
 
