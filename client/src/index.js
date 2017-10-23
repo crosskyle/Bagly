@@ -7,7 +7,7 @@ import promise from 'redux-promise'
 import reduxThunk from 'redux-thunk'
 
 import reducers from './reducers/index'
-import {AUTH_USER} from "./actions/types"
+import {AUTH_USER, READ_USER} from "./actions/types"
 import App from './components/App'
 import Welcome from './components/Welcome'
 import PrivateRoute from './components/PrivateRoute'
@@ -18,9 +18,14 @@ const createStoreWithMiddleware = applyMiddleware(promise, reduxThunk)(createSto
 const store = createStoreWithMiddleware(reducers)
 
 const token = localStorage.getItem('token')
+const userId = localStorage.getItem('userId')
 
-if (token) {
+if (token && userId) {
   store.dispatch({ type: AUTH_USER})
+  store.dispatch({
+    type: READ_USER,
+    payload: {id: userId}
+  })
 }
 
 ReactDOM.render(

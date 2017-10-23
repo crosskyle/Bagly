@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 import {
+  READ_USER,
   DELETE_ITEM,
   CREATE_PACK,
   READ_PACK,
@@ -16,11 +17,9 @@ import {
 const ROOT_URL = 'http://localhost:3050'
 
 
-const USER_ID = localStorage.getItem('userId')
-
-
 export function signoutUser() {
   localStorage.removeItem('token')
+  localStorage.removeItem('userId')
 
   return {
     type: UNAUTH_USER,
@@ -40,12 +39,16 @@ export function signupUser(email, password) {
 
     axios.post(`${ROOT_URL}/api/signup`, { email: email, password: password })
       .then(response => {
-        // update state to indicate user is auth'd
-        dispatch({ type: AUTH_USER })
-
         // save the JWT token
         localStorage.setItem('token', response.data.token)
         localStorage.setItem('userId', response.data.user.id)
+
+        // update state to indicate user is auth'd
+        dispatch({ type: AUTH_USER })
+        dispatch({
+          type: READ_USER,
+          payload: response.data.user
+        })
       })
       .catch(() => {
         // show error to the user
@@ -57,17 +60,18 @@ export function signupUser(email, password) {
 export function signinUser(email, password) {
 
   return function (dispatch) {
-
     axios.post(`${ROOT_URL}/api/signin`, { email: email, password: password })
       .then(response => {
-        // update state to indicate user is auth'd
-        dispatch({ type: AUTH_USER })
-
         // save the JWT token
         localStorage.setItem('token', response.data.token)
         localStorage.setItem('userId', response.data.user.id)
 
-        console.log(response)
+        // update state to indicate user is auth'd
+        dispatch({ type: AUTH_USER })
+        dispatch({
+          type: READ_USER,
+          payload: response.data.user
+        })
       })
       .catch(() => {
         // show error to the user
@@ -78,6 +82,7 @@ export function signinUser(email, password) {
 
 
 export function createPack() {
+  const USER_ID = localStorage.getItem('userId')
   const response = axios.post(`${ROOT_URL}/api/users/${USER_ID}/packs`)
     .then((resp) => resp.data)
 
@@ -89,6 +94,7 @@ export function createPack() {
 
 
 export function updatePack(packId, reqObj) {
+  const USER_ID = localStorage.getItem('userId')
   const response = axios.put(`${ROOT_URL}/api/users/${USER_ID}/packs/${packId}`, reqObj)
     .then((resp) => resp.data)
 
@@ -100,6 +106,7 @@ export function updatePack(packId, reqObj) {
 
 
 export function createCategory(packId, reqObj) {
+  const USER_ID = localStorage.getItem('userId')
   const response = axios.post(`${ROOT_URL}/api/users/${USER_ID}/packs/${packId}/categories`, {
     title: reqObj.title
   })
@@ -113,6 +120,7 @@ export function createCategory(packId, reqObj) {
 
 
 export function createItemInCategory(packId, categoryId, reqObj) {
+  const USER_ID = localStorage.getItem('userId')
   return function(dispatch) {
     axios.post(`${ROOT_URL}/api/users/${USER_ID}/packs/${packId}/categories/${categoryId}/items`, reqObj)
       .then((resp) => {
@@ -165,6 +173,7 @@ export function putItemInCategory(categoryEndpoint, itemId) {
 
 
 export function readPacks() {
+  const USER_ID = localStorage.getItem('userId')
   const response = axios.get(`${ROOT_URL}/api/users/${USER_ID}/packs`, {
     headers: { authorization: localStorage.getItem('token') }
   })
@@ -178,6 +187,7 @@ export function readPacks() {
 
 
 export function readItems() {
+  const USER_ID = localStorage.getItem('userId')
   const response = axios.get(`${ROOT_URL}/api/users/${USER_ID}`, {
     headers: { authorization: localStorage.getItem('token') }
   })
@@ -199,6 +209,7 @@ export function selectedPack(packId) {
 
 
 export function deletePack(packId) {
+  const USER_ID = localStorage.getItem('userId')
   return function(dispatch) {
     axios.delete(`${ROOT_URL}/api/users/${USER_ID}/packs/${packId}`)
       .then((resp) => {
@@ -225,6 +236,7 @@ export function deletePack(packId) {
 
 
 export function deleteItem(itemId, pack) {
+  const USER_ID = localStorage.getItem('userId')
   return function(dispatch) {
     axios.delete(`${ROOT_URL}/api/users/${USER_ID}/items/${itemId}`)
       .then(() => {
@@ -256,6 +268,7 @@ export function deleteItem(itemId, pack) {
 }
 
 export function deleteCategory(packId, categoryId) {
+  const USER_ID = localStorage.getItem('userId')
   return function(dispatch) {
     axios.delete(`${ROOT_URL}/api/users/${USER_ID}/packs/${packId}/categories/${categoryId}`)
       .then((resp) => {
@@ -276,6 +289,7 @@ export function deleteCategory(packId, categoryId) {
 }
 
 export function removeItemFromList(packId, categoryId, itemId) {
+  const USER_ID = localStorage.getItem('userId')
   return function(dispatch) {
     axios.delete(`${ROOT_URL}/api/users/${USER_ID}/packs/${packId}/categories/${categoryId}/items/${itemId}`)
       .then((resp) => {
@@ -296,6 +310,7 @@ export function removeItemFromList(packId, categoryId, itemId) {
 }
 
 export function updateItem(packId, categoryId, itemId, item) {
+  const USER_ID = localStorage.getItem('userId')
   const response = axios.patch(`${ROOT_URL}/api/users/${USER_ID}/packs/${packId}/categories/${categoryId}/items/${itemId}`, item)
     .then((resp) => resp.data)
 
