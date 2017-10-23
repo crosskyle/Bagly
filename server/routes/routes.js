@@ -29,11 +29,11 @@ module.exports = (app) => {
 
   // Read
 
-  app.get('/api/users/:userId', ReadController.read_user)
+  app.get('/api/users/:userId', requireAuth, ReadController.read_user)
 
-  app.get('/api/users/:userId/packs', ReadController.read_packs)
+  app.get('/api/users/:userId/packs', requireAuth, ReadController.read_packs)
 
-  app.get('/api/users/:userId/packs/:packId', ReadController.read_pack)
+  app.get('/api/users/:userId/packs/:packId', requireAuth, ReadController.read_pack)
 
   // Update
 

@@ -16,8 +16,8 @@ import {
 const ROOT_URL = 'http://localhost:3050'
 
 
-const USER_ID = '59ed5ea52a0ec7119c98f558'
-//const USER_ID = '59b5b4005a43c3029b9655de'
+const USER_ID = localStorage.getItem('userId')
+
 
 export function signoutUser() {
   localStorage.removeItem('token')
@@ -66,6 +66,8 @@ export function signinUser(email, password) {
         // save the JWT token
         localStorage.setItem('token', response.data.token)
         localStorage.setItem('userId', response.data.user.id)
+
+        console.log(response)
       })
       .catch(() => {
         // show error to the user
@@ -128,7 +130,9 @@ export function createItemInCategory(packId, categoryId, reqObj) {
         })
       })
       .then(() => {
-        axios.get(`${ROOT_URL}/api/users/${USER_ID}`)
+        axios.get(`${ROOT_URL}/api/users/${USER_ID}`, {
+          headers: { authorization: localStorage.getItem('token') }
+        })
           .then((resp) =>  {
             dispatch({
               type: READ_ITEMS,
@@ -161,7 +165,9 @@ export function putItemInCategory(categoryEndpoint, itemId) {
 
 
 export function readPacks() {
-  const response = axios.get(`${ROOT_URL}/api/users/${USER_ID}/packs`)
+  const response = axios.get(`${ROOT_URL}/api/users/${USER_ID}/packs`, {
+    headers: { authorization: localStorage.getItem('token') }
+  })
     .then((resp) =>  resp.data )
 
   return {
@@ -172,7 +178,9 @@ export function readPacks() {
 
 
 export function readItems() {
-  const response = axios.get(`${ROOT_URL}/api/users/${USER_ID}`)
+  const response = axios.get(`${ROOT_URL}/api/users/${USER_ID}`, {
+    headers: { authorization: localStorage.getItem('token') }
+  })
     .then((resp) =>  resp.data.items )
 
   return {
@@ -226,7 +234,9 @@ export function deleteItem(itemId, pack) {
         })
       })
       .then(() => {
-        axios.get(`${ROOT_URL}/api/users/${USER_ID}/packs`)
+        axios.get(`${ROOT_URL}/api/users/${USER_ID}/packs`, {
+          headers: { authorization: localStorage.getItem('token') }
+        })
           .then((resp) => {
             dispatch({
               type: READ_PACKS,
