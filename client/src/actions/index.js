@@ -8,23 +8,73 @@ import {
   SELECTED_PACK,
   READ_ITEMS,
   PACK_VIS,
-  AUTH_USER
+  AUTH_USER,
+  UNAUTH_USER,
+  AUTH_ERROR
 } from './types'
 
 const ROOT_URL = 'http://localhost:3050'
 
-const USER_ID = '59b5b4005a43c3029b9655de'
 
-export function authenticate(email, password) {
+const USER_ID = '59ed5ea52a0ec7119c98f558'
+//const USER_ID = '59b5b4005a43c3029b9655de'
 
-  const response = axios.post(`${ROOT_URL}/api/users/${USER_ID}/packs`)
-    .then((resp) => resp.data)
+export function signoutUser() {
+  localStorage.removeItem('token')
 
   return {
-    type: AUTH_USER,
-    payload: response
+    type: UNAUTH_USER,
   }
 }
+
+export function authError(error) {
+  return {
+    type: AUTH_ERROR,
+    payload: error
+  }
+}
+
+export function signupUser(email, password) {
+
+  return function (dispatch) {
+
+    axios.post(`${ROOT_URL}/api/signup`, { email: email, password: password })
+      .then(response => {
+        // update state to indicate user is auth'd
+        dispatch({ type: AUTH_USER })
+
+        // save the JWT token
+        localStorage.setItem('token', response.data.token)
+        localStorage.setItem('userId', response.data.user.id)
+      })
+      .catch(() => {
+        // show error to the user
+        dispatch(authError('Email is in use'))
+      })
+  }
+}
+
+export function signinUser(email, password) {
+
+  return function (dispatch) {
+
+    axios.post(`${ROOT_URL}/api/signin`, { email: email, password: password })
+      .then(response => {
+        // update state to indicate user is auth'd
+        dispatch({ type: AUTH_USER })
+
+        // save the JWT token
+        localStorage.setItem('token', response.data.token)
+        localStorage.setItem('userId', response.data.user.id)
+      })
+      .catch(() => {
+        // show error to the user
+        dispatch(authError('Bad Login Info'))
+      })
+  }
+}
+
+
 export function createPack() {
   const response = axios.post(`${ROOT_URL}/api/users/${USER_ID}/packs`)
     .then((resp) => resp.data)

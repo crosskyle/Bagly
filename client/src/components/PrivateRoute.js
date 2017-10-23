@@ -1,13 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { authenticate } from '../actions'
 import { Route, Redirect } from 'react-router-dom'
 
 
 class PrivateRoute extends Component {
 
   componentWillMount() {
-    //this.props.authenticate()
+    //this.props.signinUser()
   }
 
 
@@ -35,5 +34,5 @@ function mapStateToProps(state) {
   return { auth: state.auth }
 }
 
-export default connect(mapStateToProps, { authenticate })(PrivateRoute)
+export default connect(mapStateToProps, null)(PrivateRoute)
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { authenticate } from '../actions'
+import { signinUser, signupUser } from '../actions'
 import PropTypes from 'prop-types'
 import { withStyles } from 'material-ui-next/styles'
 import Paper from 'material-ui-next/Paper'
@@ -56,19 +56,20 @@ const styles = theme => ({
 class Welcome extends Component {
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       email: '',
       password: ''
     }
-
-    this.onFormSubmit = this.onFormSubmit.bind(this);
   }
 
-  onFormSubmit(event) {
-    event.preventDefault();
-    this.props.signInOrSignUp(this.state.email, this.state.password)
+  onSignin() {
+    this.props.signinUser(this.state.email, this.state.password)
+  }
+
+  onSignup() {
+    this.props.signupUser(this.state.email, this.state.password)
   }
 
   render() {
@@ -84,7 +85,6 @@ class Welcome extends Component {
             className={classes.form}
             noValidate
             autoComplete="off"
-            onSubmit={this.onFormSubmit}
           >
             <TextField
               id="email"
@@ -112,15 +112,23 @@ class Welcome extends Component {
                 })
               }}
             />
-            <Button
-              raised
-              color="primary"
-              className={classes.button}
-              type = "submit"
-            >
-              signin / signup
-            </Button>
           </form>
+          <Button
+          raised
+          color="primary"
+          className={classes.button}
+          onClick={() => this.onSignin()}
+        >
+          signin
+        </Button>
+          <Button
+            raised
+            color="primary"
+            className={classes.button}
+            onClick={() => this.onSignup()}
+          >
+            signup
+          </Button>
         </Paper>
       </div>
     );
@@ -133,6 +141,6 @@ Welcome.propTypes = {
 };
 
 Welcome = withStyles(styles)(Welcome)
-Welcome = connect(null, { signInOrSignUp: authenticate })(Welcome)
+Welcome = connect(null, { signinUser, signupUser })(Welcome)
 
 export default Welcome
