@@ -5,11 +5,12 @@ const mongoose = require('mongoose')
 const routes = require('./routes/routes')
 const app = express()
 const cors = require('cors')
+const keys = require('./config/keys')
 
 mongoose.Promise = global.Promise
 
-if(process.env.NOD_ENV !== 'test') {
-  mongoose.connect('mongodb://localhost/packShakedown')
+if (process.env.NOD_ENV !== 'test') {
+  mongoose.connect(keys.mongoURI)
 }
 
 app.use(morgan('combined'))
