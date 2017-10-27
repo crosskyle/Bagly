@@ -14,7 +14,7 @@ import {
   AUTH_ERROR
 } from './types'
 
-const ROOT_URL = 'http://localhost:3050'
+const ROOT_URL = 'https://floating-fjord-48312.herokuapp.com'
 
 
 export function signoutUser() {
